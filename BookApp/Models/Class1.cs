@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Models
 {
+    // this file contains no relevant code
     public class Class1
     {
     }

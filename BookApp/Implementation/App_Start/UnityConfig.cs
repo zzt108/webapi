@@ -4,6 +4,7 @@ using Unity;
 
 namespace Implementation
 {
+    // this class contains no relevant code
     /// <summary>
     /// Specifies the Unity configuration for the main container.
     /// </summary>
