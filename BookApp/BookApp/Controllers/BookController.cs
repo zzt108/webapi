@@ -17,6 +17,10 @@ namespace BookApp.Controllers
     [EnableCors(origins: "*", headers: "accept,Auth-Key", methods: "*")]
     public class BookController : ApiController
     {
+        private const int ErrorCodeNoBookFound = 1;
+        private const int ErrorCodeSavingBook = 2;
+        private const int ErrorCodeUpdatingBook = 3;
+        private const int ErrorCodeDeletingBook = 4;
         private IBookService BookService;
 
         public BookController() {
@@ -35,10 +39,16 @@ namespace BookApp.Controllers
                     HttpStatus = HttpStatusCode.BadRequest
                 };
             var book = BookService.GetBookById(bookId);
+            // Coding convention: always use braces even on oneliner ifs and elses
             if (book != null)
+            {
                 return Request.CreateResponse(HttpStatusCode.OK, book, JsonFormatter);
+            }
             else
-                throw new APIDataException(1, "No book found", HttpStatusCode.NotFound);
+            {
+                // No magical numbers in code - error codes must be defined as constants
+                throw new APIDataException(ErrorCodeNoBookFound, "No book found", HttpStatusCode.NotFound);
+            }
         }
 
         [HttpPost]
@@ -52,9 +62,14 @@ namespace BookApp.Controllers
                 };
             book = BookService.AddBook(book);
             if (book != null)
+            {
                 return Request.CreateResponse(HttpStatusCode.OK, book, JsonFormatter);
+            }
             else
-                throw new APIDataException(2, "Error Saving Book", HttpStatusCode.NotFound);
+            {
+                // No magical numbers in code - error codes must be defined as constants
+                throw new APIDataException(ErrorCodeSavingBook, "Error Saving Book", HttpStatusCode.NotFound);
+            }
         }
 
         [HttpPut]
@@ -68,9 +83,14 @@ namespace BookApp.Controllers
                 };
             book = BookService.UpdateBook(book);
             if (book != null)
+            {
                 return Request.CreateResponse(HttpStatusCode.OK, book, JsonFormatter);
+            }
             else
-                throw new APIDataException(3, "Error Updating Book", HttpStatusCode.NotFound);
+            {
+                // No magical numbers in code - error codes must be defined as constants
+                throw new APIDataException(ErrorCodeUpdatingBook, "Error Updating Book", HttpStatusCode.NotFound);
+            }
         }
 
         [HttpPost]
@@ -86,11 +106,20 @@ namespace BookApp.Controllers
             if (book != null) {
                 var result = BookService.DeleteBook(book);
                 if (result)
+                {
                     return Request.CreateResponse(HttpStatusCode.OK, "Book was deleted", JsonFormatter);
+                }
                 else
-                    throw new APIDataException(3, "Error Deleting Book", HttpStatusCode.NotFound);
+                {
+                    // No magical numbers in code - error codes must be defined as constants
+                    // Immediately turns out that bad error code is used
+                    throw new APIDataException(ErrorCodeDeletingBook, "Error Deleting Book", HttpStatusCode.NotFound);
+                }
             } else
-                throw new APIDataException(1, "No book found", HttpStatusCode.NotFound);
+            {
+                // No magical numbers in code - error codes must be defined as constants
+                throw new APIDataException(ErrorCodeNoBookFound, "No book found", HttpStatusCode.NotFound);
+            }
         }
 
 

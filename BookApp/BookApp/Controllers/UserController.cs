@@ -18,6 +18,14 @@ namespace BookApp.Controllers
     [EnableCors(origins: "*", headers: "accept,Auth-Key", methods: "*")]
     public class UserController : ApiController
     {
+        // todo Collides with book delete error code, book delete error code was not defined, decision needs to be done
+        private const int ErrorCodeNoUserFound = 4;  
+        private const int ErrorCodeSavingUser = 5;
+        private const int ErrorCodeUpdatingUser = 6;
+        private const int ErrorCodeDeletingUser = 7;
+        // todo book error codes should come from book controllers
+        private const int ErrorCodeSavingBook = 2;
+        private const int ErrorCodeNoBooksFound = 1;
         private IBookRepository BookRepository;
         private IBookService BookService;
         private IUserService UserService;
@@ -41,9 +49,14 @@ namespace BookApp.Controllers
                 };
             var user = UserService.GetUserById(userId);
             if (user != null)
+            {
                 return Request.CreateResponse(HttpStatusCode.OK, user, JsonFormatter);
+            }
             else
-                throw new APIDataException(4, "No user found", HttpStatusCode.NotFound);
+            {
+                // No magical numbers in code - error codes must be defined as constants
+                throw new APIDataException(ErrorCodeNoUserFound, "No user found", HttpStatusCode.NotFound);
+            }
         }
 
         [HttpPost]
@@ -57,9 +70,14 @@ namespace BookApp.Controllers
                 };
             user = UserService.AddUser(user);
             if (user != null)
+            {
                 return Request.CreateResponse(HttpStatusCode.OK, user, JsonFormatter);
+            }
             else
-                throw new APIDataException(5, "Error Saving User", HttpStatusCode.NotFound);
+            {
+                // No magical numbers in code - error codes must be defined as constants
+                throw new APIDataException(ErrorCodeSavingUser, "Error Saving User", HttpStatusCode.NotFound);
+            }
         }
 
         [HttpPut]
@@ -75,7 +93,8 @@ namespace BookApp.Controllers
             if (user != null)
                 return Request.CreateResponse(HttpStatusCode.OK, user, JsonFormatter);
             else
-                throw new APIDataException(6, "Error Updating User", HttpStatusCode.NotFound);
+                // No magical numbers in code - error codes must be defined as constants
+                throw new APIDataException(ErrorCodeUpdatingUser, "Error Updating User", HttpStatusCode.NotFound);
         }
 
         [HttpPost]
@@ -91,11 +110,19 @@ namespace BookApp.Controllers
             if (user != null) {
                 var result = UserService.DeleteUser(user);
                 if (result)
+                {
                     return Request.CreateResponse(HttpStatusCode.OK, "Book was deleted", JsonFormatter);
+                }
                 else
-                    throw new APIDataException(7, "Error Deleting User", HttpStatusCode.NotFound);
+                {
+                    // No magical numbers in code - error codes must be defined as constants
+                    throw new APIDataException(ErrorCodeDeletingUser, "Error Deleting User", HttpStatusCode.NotFound);
+                }
             } else
-                throw new APIDataException(4, "No user found", HttpStatusCode.NotFound);
+            {
+                // No magical numbers in code - error codes must be defined as constants
+                throw new APIDataException(ErrorCodeNoUserFound, "No user found", HttpStatusCode.NotFound);
+            }
         }
 
         [HttpPost]
@@ -117,9 +144,15 @@ namespace BookApp.Controllers
             BookRepository.SaveChanges();
             var result = BookRepository.GetBookByID(book.Id);
             if (result != null)
+            {
                 return Request.CreateResponse(HttpStatusCode.OK, result, JsonFormatter);
+            }
             else
-                throw new APIDataException(2, "Error Saving Book", HttpStatusCode.NotFound);
+            {
+                // No magical numbers in code - error codes must be defined as constants
+                //todo SavingBook error code should come from book controller
+                throw new APIDataException(ErrorCodeSavingBook, "Error Saving Book", HttpStatusCode.NotFound);
+            }
         }
 
         [HttpGet]
@@ -135,7 +168,9 @@ namespace BookApp.Controllers
             if (books != null)
                 return Request.CreateResponse(HttpStatusCode.OK, books, JsonFormatter);
             else
-                throw new APIDataException(1, "No books found", HttpStatusCode.NotFound);
+                // No magical numbers in code - error codes must be defined as constants
+                //todo NoBooksFound error code should come from book controller
+                throw new APIDataException(ErrorCodeNoBooksFound, "No books found", HttpStatusCode.NotFound);
         }
 
 
