@@ -17,7 +17,7 @@ namespace Repository.Repositories {
         protected override IDbSet<Book> DbSet => MasterDB.Books;
 
         public Book GetBookByID(Guid bookId) {
-            return GetAll().Where(b => b.Id == bookId).SingleOrDefault();
+            return GetAll().SingleOrDefault(b => b.Id == bookId);  // replace with single call to SingleOrDefault
         }
 
         public IQueryable<BookExtended> GetBooksByUserId(Guid userId) {
@@ -29,7 +29,7 @@ namespace Repository.Repositories {
                     Id = b.Id,
                     Title = b.Title,
                     UserId = b.UserId,
-                    UserName = b.User.FirstName + " " + b.User.LastName
+                    UserName = $"{b.User.FirstName} {b.User.LastName}"  // use interpolation instead of concatenation
                 }
             );
         }
