@@ -12,6 +12,7 @@ using Unity.AspNet.Mvc;
 namespace Repository {
     public class TypeRegistrations {
         public static void RegisterType(IUnityContainer unityContainer) {
+            // For testability we should use an interface for BaseDBContext
             unityContainer.RegisterType<BaseDBContext>(new PerRequestLifetimeManager());
             unityContainer.RegisterType<IUserRepository, UserRepository>();
             unityContainer.RegisterType<IBookRepository, BookRepository>();
